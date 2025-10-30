@@ -16,7 +16,7 @@ const plantState = ref({
 });
 
 const MAX_PROGRESS = 100;
-const STAGES = ['growing seed', 'sprout', 'growing plant', 'flower'];
+const STAGES = ['sprout', 'growing plant', 'flower'];
 
 const bannerMessage = ref('');
 const showBanner = ref(false);

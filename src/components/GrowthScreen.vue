@@ -48,7 +48,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import grownSeedImage from '../assets/images/grown_seed.png';
 import sproutImage from '../assets/images/sprout.png';
 import plantImage from '../assets/images/plant.png';
 import flowerImage from '../assets/images/flower.png';
@@ -66,7 +65,6 @@ defineProps({
 const emit = defineEmits(['provide-resource', 'restart']);
 
 const stageImages = [
-  grownSeedImage,
   sproutImage,
   plantImage,
   flowerImage
