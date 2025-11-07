@@ -1,6 +1,13 @@
 <template>
   <div class="container-fluid my-5 d-flex justify-content-center">
     <div class="card game-container text-center w-100">
+      
+      <VideoModal
+        :visible="showVideo"
+        :videoSrc="currentVideo"
+        @close="showVideo = false"
+      />
+
       <h2 class="title">Planting Screen</h2>
       <p>Drag the seed and plant it in the soil area below.</p>
 
@@ -50,11 +57,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import seedImage from '../assets/images/seed.png'; 
 import soilImage from '../assets/images/terrain.png'; 
 import popSoundFile from '../assets/sounds/PopSound.mp3';
 import plantingSoundFile from '../assets/sounds/Planting.mp3';
+import VideoModal from '@/components/AnimationModal.vue';
+import videoSeed from '@/assets/videos/seed.mp4';
 
 const emit = defineEmits(['start', 'continue']);
 
@@ -62,12 +71,19 @@ const plantedSeeds = ref([]);
 const soil = ref(null);
 const soilImg = ref(null);
 const seedRef = ref(null);
+const showVideo = ref(false);
+const currentVideo = ref(null);
 
 const seedCount = computed(() => plantedSeeds.value.length);
 let dragging = null;
 
 const popAudio = new Audio(popSoundFile);
 const plantingAudio = new Audio(plantingSoundFile);
+
+onMounted(() => {
+  currentVideo.value = videoSeed;
+  showVideo.value = true;
+});
 
 const playPopSound = async () => { 
   try { 

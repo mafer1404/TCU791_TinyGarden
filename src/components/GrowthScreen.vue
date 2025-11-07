@@ -18,6 +18,12 @@
         class="plant-image"
         :style="{ left: plant.x + '%', bottom: plant.y + 'px' }"
       />
+      
+    <VideoModal
+      :visible="showVideo"
+      :videoSrc="currentVideo"
+      @close="showVideo = false"
+    />
 
     <div v-for="drop in waterDrops" :key="drop.id" class="water-drop" :style="{ left: drop.x + '%' }"></div>
     <div v-for="ray in sunRays" :key="ray.id" class="sun-ray" :style="{ left: ray.x + '%' }"></div>
@@ -47,14 +53,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import sproutImage from '../assets/images/sprout.png';
 import plantImage from '../assets/images/plant.png';
 import flowerImage from '../assets/images/flower.png';
 import wateringSound from '../assets/sounds/Watering.mp3';
 import sunlightSound from '../assets/sounds/Sunlight.mp3';
+import VideoModal from '@/components/AnimationModal.vue';
 
-defineProps({
+import videoSprout from '@/assets/videos/sprout.mp4';
+import videoPlant from '@/assets/videos/growing_plant.mp4';
+import videoFlower from '@/assets/videos/flower.mp4';
+
+const props = defineProps({
   plantState: Object,
   stages: Array,
   maxProgress: Number,
@@ -80,6 +91,19 @@ const waterDrops = ref([]);
 const sunRays = ref([]);
 const wateringAudio = new Audio(wateringSound);
 const sunlightAudio = new Audio(sunlightSound);
+const showVideo = ref(false);
+const currentVideo = ref(null);
+
+const stageVideos = [
+  videoSprout,
+  videoPlant,
+  videoFlower
+];
+
+onMounted(() => {
+  currentVideo.value = stageVideos[props.plantState.stage];
+  showVideo.value = true;
+});
 
 const handleWaterClick = () => {
   emit('provide-resource', 'water');
@@ -121,14 +145,28 @@ const handleSunClick = () => {
   });
 };
 
+watch(
+  () => props.plantState.stage,
+  (newStage, oldStage) => {
+    if (newStage !== oldStage) {
+      currentVideo.value = stageVideos[newStage];
+      showVideo.value = true;
+    }
+  }
+);
+
 </script>
 
 <style scoped>
 .game-container {
-  max-width: 900px;
-  margin: 0 auto;
-  text-align: center;
-  font-family: Arial, sans-serif;
+  background-color: #f4f9f4;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(153, 217, 140, 0.3);
+  padding: 2rem;
+  max-width: 750px;  
+  width: 100%;       
+  margin: 0 auto;   
 }
 
 .resources-above-plant {
@@ -209,7 +247,7 @@ const handleSunClick = () => {
 .progress-bar {
   width: 100%;
   height: 20px;
-  background: #f4f9f4;
+  background: #d6d8d6;
   border-radius: 10px;
   overflow: hidden;
   margin: 5px 0;
